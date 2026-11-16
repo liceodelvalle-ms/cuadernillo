@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<title>Cuadernillo de tareas · 5° grado · Liceo del Valle</title>
+<meta name="description" content="Cuadernillo de tareas de 5° grado · Middle School · Liceo del Valle">
+<meta name="theme-color" content="#EAF6F8">
+</head>
+<body style="margin:0;background:#EAF6F8;font-family:Georgia,serif;color:#1d4f5c">
+<p id="msg" style="text-align:center;margin:42vh 20px 0;font-size:17px">Abriendo el cuadernillo…</p>
+<script>
+(function () {
+  // La página completa del cuadernillo la entrega Apps Script (solo lectura) y se guarda en el dispositivo.
+  var URL_PAGINA = 'https://script.google.com/macros/s/AKfycbyxEK02f1vHdvcYB5qjou0eHjZbpUv9D8eRp5biE6pIXZWGTBwwD0yBgUd5w1-6_e9gTw/exec?site=1';
+  var KEY = 'cuadernillo5_pagina';
+  var guardada = null;
+  try { guardada = localStorage.getItem(KEY); } catch (e) {}
+  function valida(t) { return t && t.indexOf('<html') > -1 && t.indexOf('</html>') > -1; }
+  function mostrar(t) {
+    function poner() { document.open(); document.write(t); document.close(); }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function () { setTimeout(poner, 0); });
+    else poner();
+  }
+  function error() {
+    var m = document.getElementById('msg');
+    if (m) m.textContent = 'No se pudo abrir el cuadernillo. Revisa tu conexión e intenta de nuevo.';
+  }
+  function pedir(intento) {
+    var x = new XMLHttpRequest();
+    x.open('GET', URL_PAGINA + '&t=' + Date.now(), true);
+    x.timeout = 25000;
+    x.onload = function () {
+      var t = x.responseText;
+      if (x.status === 200 && valida(t)) {
+        try { localStorage.setItem(KEY, t); } catch (e) {}
+        if (!valida(guardada)) mostrar(t);
+      } else otraVez(intento);
+    };
+    x.onerror = x.ontimeout = function () { otraVez(intento); };
+    x.send();
+  }
+  function otraVez(intento) {
+    if (intento < 2) { setTimeout(function () { pedir(intento + 1); }, 1500 * (intento + 1)); return; }
+    if (!valida(guardada)) error();
+  }
+  pedir(0);
+  if (valida(guardada)) mostrar(guardada);
+})();
+</script>
+</body>
+</html>
