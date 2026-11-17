@@ -2,16 +2,16 @@
 <html lang="es">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
-<title>Cuadernillo de tareas · 5° grado · Liceo del Valle</title>
-<meta name="description" content="Cuadernillo de tareas de 5° grado · Middle School · Liceo del Valle">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, viewport-fit=cover">
+<title>Agenda de tareas · 5° grado · Liceo del Valle</title>
+<meta name="description" content="Agenda de tareas de 5° grado · Middle School · Liceo del Valle">
 <meta name="theme-color" content="#EAF6F8">
 </head>
 <body style="margin:0;background:#EAF6F8;font-family:Georgia,serif;color:#1d4f5c">
-<p id="msg" style="text-align:center;margin:42vh 20px 0;font-size:17px">Abriendo el cuadernillo…</p>
+<p id="msg" style="text-align:center;margin:42vh 20px 0;font-size:17px">Abriendo la agenda…</p>
 <script>
 (function () {
-  // La página completa del cuadernillo la entrega Apps Script (solo lectura) y se guarda en el dispositivo.
+  // La página completa de la agenda la entrega Apps Script (solo lectura) y se guarda en el dispositivo.
   var URL_PAGINA = 'https://script.google.com/macros/s/AKfycbyxEK02f1vHdvcYB5qjou0eHjZbpUv9D8eRp5biE6pIXZWGTBwwD0yBgUd5w1-6_e9gTw/exec?site=1';
   var KEY = 'cuadernillo5_pagina';
   var guardada = null;
@@ -24,7 +24,7 @@
   }
   function error() {
     var m = document.getElementById('msg');
-    if (m) m.textContent = 'No se pudo abrir el cuadernillo. Revisa tu conexión e intenta de nuevo.';
+    if (m) m.textContent = 'No se pudo abrir la agenda. Revisa tu conexión e intenta de nuevo.';
   }
   function pedir(intento) {
     var x = new XMLHttpRequest();
@@ -35,6 +35,7 @@
       if (x.status === 200 && valida(t)) {
         try { localStorage.setItem(KEY, t); } catch (e) {}
         if (!valida(guardada)) mostrar(t);
+        else if (t !== guardada) location.reload(); // hay una versión nueva: se abre ya actualizada
       } else otraVez(intento);
     };
     x.onerror = x.ontimeout = function () { otraVez(intento); };
